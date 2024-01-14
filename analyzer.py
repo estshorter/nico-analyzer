@@ -6,18 +6,24 @@ import tomllib
 import japanize_matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
+import seaborn as sns
+
+import xml.etree.ElementTree as ET
+import requests
 
 # SHOW_PLOT = True
 SHOW_PLOT = False
 
 
 def visualize_both(df, category, title):
+    print("再生数")
     df2 = df[["startTime", "viewCounter"]]
     annualView = df2.resample("Y", on="startTime").sum()
     x = list(annualView.index)
     x = [d.year for d in x]
     print(annualView)
     print("=======")
+    print("投稿数")
 
     df2 = df["startTime"].value_counts()
     annualSubmit = df2.resample("Y").sum()
@@ -62,6 +68,7 @@ def visualize_newcomer(df: pd.DataFrame, category: str, title: str):
         current = newcommers.get(d.year, 0)
         newcommers[d.year] = current + 1
     newcommers_list = sorted(newcommers.items())
+    print("新規投稿者数")
     print("year, count")
     for year, count in newcommers_list:
         print(f"{year}, {count:5d}")
@@ -76,7 +83,7 @@ def visualize_newcomer(df: pd.DataFrame, category: str, title: str):
     plt.gca().set_title(title)
 
     plt.gca().yaxis.get_label().set_color(p1.get_color())
-
+    plt.grid()
     plt.gcf().autofmt_xdate()
     if SHOW_PLOT:
         plt.show()
@@ -87,6 +94,43 @@ def visualize_newcomer(df: pd.DataFrame, category: str, title: str):
     plt.close("all")
 
 
+def visualize_distribution(df: pd.DataFrame, category: str, title: str):
+    df2 = df[["startTime", "viewCounter"]].copy()
+    df2.loc[:, "startTime"] = df2["startTime"].apply(lambda x: x.year)
+    sns.boxplot(data=df2, x="startTime", y="viewCounter")
+
+    plt.gca().set_xlabel("投稿年")
+    plt.gca().set_ylabel("再生数")
+    plt.gca().set_title(title)
+    plt.grid()
+
+    plt.ylim(0, 50 * 1000)
+    plt.gcf().autofmt_xdate()
+    if SHOW_PLOT:
+        plt.show()
+    else:
+        plt.savefig(
+            f"results/{category}_annual-distribution.png", dpi=300, bbox_inches="tight"
+        )
+    plt.close("all")
+
+
+def show_most_popular_video(df: pd.DataFrame):
+    print("最大再生数の動画")
+    df2 = df
+    for year in range(df2["startTime"].min().year, df2["startTime"].max().year + 1):
+        start = f"{year}-01-01T00:00:00+09:00"
+        end = f"{year+1}-01-01T00:00:00+09:00"
+        data = df.query("startTime.between(@start, @end)")
+        idxmax = data["viewCounter"].idxmax()
+        popular = data.loc[idxmax, :]
+        url = f'https://seiga.nicovideo.jp/api/user/info?id={popular["userId"]}'
+        header = {"User-Agent": "Mozilla/5.0"}
+        r = requests.get(url, headers=header)
+        root = ET.fromstring(r.text)
+        # print(df.query("index == @index"))
+        print(f"{year}: {popular["startTime"]}, {root.findtext("user/nickname")}, {popular["title"]}, {popular["viewCounter"]}")
+
 def main(category, title):
     with open(f"results/{category}.pickle", "rb") as f:
         recv = pickle.load(f)
@@ -94,10 +138,14 @@ def main(category, title):
     df = pd.json_normalize(recv["data"])
     df["startTime"] = pd.to_datetime(df["startTime"])
     df = df.sort_values("startTime", ignore_index=True)
+    df.fillna({"userId": 0}, inplace=True)
+    df["userId"] = df["userId"].astype("uint64")
     date = datetime.datetime.now()
     df = df[df.startTime < pd.to_datetime(f"{date.year}-01-01T00:00:00+09:00")]
     visualize_newcomer(df, category, title)
     visualize_both(df, category, title)
+    visualize_distribution(df, category, title)
+    show_most_popular_video(df)
 
 
 if __name__ == "__main__":
