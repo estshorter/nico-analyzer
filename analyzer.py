@@ -2,14 +2,13 @@ import datetime
 import pickle
 import sys
 import tomllib
+import xml.etree.ElementTree as ET
 
 import japanize_matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
-import seaborn as sns
-
-import xml.etree.ElementTree as ET
 import requests
+import seaborn as sns
 
 # SHOW_PLOT = True
 SHOW_PLOT = False
@@ -38,9 +37,7 @@ def visualize_both(df, category, title):
 
     # step3 折れ線グラフの描画
     (p1,) = ax.plot(x, annualSubmit, marker="o", color="C0", label="投稿数")
-    (p2,) = twin1.plot(
-        x, annualView["viewCounter"] / (10**6), color="C1", marker="o", label="再生数"
-    )
+    (p2,) = twin1.plot(x, annualView["viewCounter"] / (10**6), color="C1", marker="o", label="再生数")
 
     ax.set_xlabel("投稿年")
     twin1.set_ylabel("再生数（百万単位）")
@@ -88,9 +85,7 @@ def visualize_newcomer(df: pd.DataFrame, category: str, title: str):
     if SHOW_PLOT:
         plt.show()
     else:
-        plt.savefig(
-            f"results/{category}_annual-newcommer.png", dpi=300, bbox_inches="tight"
-        )
+        plt.savefig(f"results/{category}_annual-newcommer.png", dpi=300, bbox_inches="tight")
     plt.close("all")
 
 
@@ -109,9 +104,7 @@ def visualize_distribution(df: pd.DataFrame, category: str, title: str, dist_yli
     if SHOW_PLOT:
         plt.show()
     else:
-        plt.savefig(
-            f"results/{category}_annual-distribution.png", dpi=300, bbox_inches="tight"
-        )
+        plt.savefig(f"results/{category}_annual-distribution.png", dpi=300, bbox_inches="tight")
     plt.close("all")
 
 
@@ -127,7 +120,7 @@ def show_most_popular_video(df: pd.DataFrame, category):
     with open(f"results/{category}_most_popular.csv", mode="w", encoding="utf8") as f:
         for year in range(df2["startTime"].min().year, df2["startTime"].max().year + 1):
             start = f"{year}-01-01T00:00:00+09:00"
-            end = f"{year+1}-01-01T00:00:00+09:00"
+            end = f"{year + 1}-01-01T00:00:00+09:00"
             data = df.query("startTime.between(@start, @end)")
             idxmax = data["viewCounter"].idxmax()
             popular = data.loc[idxmax, :]
@@ -138,7 +131,8 @@ def show_most_popular_video(df: pd.DataFrame, category):
             # print(df.query("index == @index"))
             tee(f"{popular["startTime"]},{root.findtext("user/nickname")},{popular["title"]},{popular["viewCounter"]}", f)
 
-def main(category, title, dist_ylim):
+
+def preprocess(category):
     with open(f"results/{category}.pickle", "rb") as f:
         recv = pickle.load(f)
     # print(recv["meta"])
@@ -149,6 +143,11 @@ def main(category, title, dist_ylim):
     df["userId"] = df["userId"].astype("uint64")
     date = datetime.datetime.now()
     df = df[df.startTime < pd.to_datetime(f"{date.year}-01-01T00:00:00+09:00")]
+    return df
+
+
+def main(category, title, dist_ylim):
+    df = preprocess(category)
     visualize_newcomer(df, category, title)
     visualize_both(df, category, title)
     visualize_distribution(df, category, title, dist_ylim)
