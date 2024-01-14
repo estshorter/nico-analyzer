@@ -128,7 +128,6 @@ def show_most_popular_video(df: pd.DataFrame, category):
             header = {"User-Agent": "Mozilla/5.0"}
             r = requests.get(url, headers=header)
             root = ET.fromstring(r.text)
-            # print(df.query("index == @index"))
             tee(f"{popular["startTime"]},{root.findtext("user/nickname")},{popular["title"]},{popular["viewCounter"]}", f)
 
 
