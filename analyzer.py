@@ -94,7 +94,7 @@ def visualize_newcomer(df: pd.DataFrame, category: str, title: str):
     plt.close("all")
 
 
-def visualize_distribution(df: pd.DataFrame, category: str, title: str):
+def visualize_distribution(df: pd.DataFrame, category: str, title: str, dist_ylim: str):
     df2 = df[["startTime", "viewCounter"]].copy()
     df2.loc[:, "startTime"] = df2["startTime"].apply(lambda x: x.year)
     sns.boxplot(data=df2, x="startTime", y="viewCounter")
@@ -104,7 +104,7 @@ def visualize_distribution(df: pd.DataFrame, category: str, title: str):
     plt.gca().set_title(title)
     plt.grid()
 
-    plt.ylim(0, 50 * 1000)
+    plt.ylim(dist_ylim)
     plt.gcf().autofmt_xdate()
     if SHOW_PLOT:
         plt.show()
@@ -138,7 +138,7 @@ def show_most_popular_video(df: pd.DataFrame, category):
             # print(df.query("index == @index"))
             tee(f"{popular["startTime"]},{root.findtext("user/nickname")},{popular["title"]},{popular["viewCounter"]}", f)
 
-def main(category, title):
+def main(category, title, dist_ylim):
     with open(f"results/{category}.pickle", "rb") as f:
         recv = pickle.load(f)
     # print(recv["meta"])
@@ -151,7 +151,7 @@ def main(category, title):
     df = df[df.startTime < pd.to_datetime(f"{date.year}-01-01T00:00:00+09:00")]
     visualize_newcomer(df, category, title)
     visualize_both(df, category, title)
-    visualize_distribution(df, category, title)
+    visualize_distribution(df, category, title, dist_ylim)
     show_most_popular_video(df, category)
 
 
@@ -160,6 +160,6 @@ if __name__ == "__main__":
     if len(args) == 2:
         with open("config.toml", "rb") as f:
             cfg = tomllib.load(f)
-        main(args[1], cfg[args[1]]["title"])
+        main(args[1], cfg[args[1]]["title"], cfg[args[1]]["dist_ylim"])
     else:
         print("コマンドライン引数が少なすぎます")
