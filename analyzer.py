@@ -124,7 +124,7 @@ def tee(msg, f):
 def show_most_popular_video(df: pd.DataFrame, category):
     print("最大再生数の動画")
     df2 = df
-    with open(f"results/{category}_most_popular.txt", mode="w", encoding="utf8") as f:
+    with open(f"results/{category}_most_popular.csv", mode="w", encoding="utf8") as f:
         for year in range(df2["startTime"].min().year, df2["startTime"].max().year + 1):
             start = f"{year}-01-01T00:00:00+09:00"
             end = f"{year+1}-01-01T00:00:00+09:00"
@@ -136,7 +136,7 @@ def show_most_popular_video(df: pd.DataFrame, category):
             r = requests.get(url, headers=header)
             root = ET.fromstring(r.text)
             # print(df.query("index == @index"))
-            tee(f"{popular["startTime"]}, {root.findtext("user/nickname")}, {popular["title"]}, {popular["viewCounter"]}", f)
+            tee(f"{popular["startTime"]},{root.findtext("user/nickname")},{popular["title"]},{popular["viewCounter"]}", f)
 
 def main(category, title):
     with open(f"results/{category}.pickle", "rb") as f:
