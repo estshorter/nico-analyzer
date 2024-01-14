@@ -51,7 +51,7 @@ def visualize_both(df, category, title):
     if SHOW_PLOT:
         plt.show()
     else:
-        plt.savefig(f"{category}_annual-both.png", dpi=300, bbox_inches="tight")
+        plt.savefig(f"results/{category}_annual-both.png", dpi=300, bbox_inches="tight")
     plt.close("all")
 
 
@@ -81,7 +81,9 @@ def visualize_newcomer(df: pd.DataFrame, category: str, title: str):
     if SHOW_PLOT:
         plt.show()
     else:
-        plt.savefig(f"{category}_annual-newcommer.png", dpi=300, bbox_inches="tight")
+        plt.savefig(
+            f"results/{category}_annual-newcommer.png", dpi=300, bbox_inches="tight"
+        )
     plt.close("all")
 
 
