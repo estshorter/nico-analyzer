@@ -13,6 +13,8 @@ import seaborn as sns
 # SHOW_PLOT = True
 SHOW_PLOT = False
 
+VIOLINPLOT = True
+
 
 def visualize_both(df, category, title):
     print("再生数")
@@ -92,7 +94,10 @@ def visualize_newcomer(df: pd.DataFrame, category: str, title: str):
 def visualize_distribution(df: pd.DataFrame, category: str, title: str, dist_ylim: str):
     df2 = df[["startTime", "viewCounter"]].copy()
     df2.loc[:, "startTime"] = df2["startTime"].apply(lambda x: x.year)
-    sns.boxplot(data=df2, x="startTime", y="viewCounter")
+    if VIOLINPLOT:
+        sns.violinplot(data=df2.query("startTime >= 2018/1/1"), x="startTime", y="viewCounter", cut=0, width=0.5)
+    else:
+        sns.boxplot(data=df2.query("startTime >= 2018/1/1"), x="startTime", y="viewCounter")
 
     plt.gca().set_xlabel("投稿年")
     plt.gca().set_ylabel("再生数")
@@ -122,6 +127,8 @@ def show_most_popular_video(df: pd.DataFrame, category):
             start = f"{year}-01-01T00:00:00+09:00"
             end = f"{year + 1}-01-01T00:00:00+09:00"
             data = df.query("startTime.between(@start, @end)")
+            if len(data) == 0:
+                continue
             idxmax = data["viewCounter"].idxmax()
             popular = data.loc[idxmax, :]
             url = f'https://seiga.nicovideo.jp/api/user/info?id={popular["userId"]}'
@@ -140,8 +147,8 @@ def preprocess(category):
     df = df.sort_values("startTime", ignore_index=True)
     df.fillna({"userId": 0}, inplace=True)
     df["userId"] = df["userId"].astype("uint64")
-    date = datetime.datetime.now()
-    df = df[df.startTime < pd.to_datetime(f"{date.year}-01-01T00:00:00+09:00")]
+    # date = datetime.datetime.now()
+    # df = df[df.startTime < pd.to_datetime(f"{date.year}-01-01T00:00:00+09:00")]
     return df
 
 
