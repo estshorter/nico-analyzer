@@ -7,7 +7,7 @@ from nicovideo_api_client.api.v2.snapshot_search_api_v2 import SnapshotSearchAPI
 from nicovideo_api_client.constants import FieldType
 
 LIMIT = 10 * 1000 * 1000
-
+TIMEOUT = 800.0
 
 def main(category, query):
     # URL生成
@@ -21,11 +21,7 @@ def main(category, query):
                 FieldType.TITLE,
                 FieldType.USER_ID,
                 FieldType.VIEW_COUNTER,
-                FieldType.MYLIST_COUNTER,
-                FieldType.LIKE_COUNTER,
-                FieldType.LENGTH_SECONDS,
                 FieldType.START_TIME,
-                FieldType.COMMENT_COUNTER,
             }
         )
         .sort(FieldType.START_TIME, reverse=True)
@@ -39,7 +35,7 @@ def main(category, query):
 
     # 実行
     # API のレスポンスが表示される
-    recv = request.request()
+    recv = request.request(timeout=TIMEOUT)
 
     Path("results").mkdir(exist_ok=True)
     with open(f"results/{category}.pickle", "wb") as f:
