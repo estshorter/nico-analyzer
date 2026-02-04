@@ -1,6 +1,11 @@
 [onboard]
 title = "ニコニコ ボイロ車載動画 年次統計"
-keywords = "VOICEPEAK車載 OR VOICEROID車載 OR CeVIO車載 OR ソフトウェアトーク車載 OR A.I.VOICE車載 OR VOICEVOX車載 OR ガイノイドTalk車載 OR Coefont車載 OR 結月ゆかり車載 OR 紲星あかり車載 OR 弦巻マキ車載 OR 琴葉姉妹車載 OR 東北イタコ車載 OR 東北ずん子車載 OR 東北きりたん車載 OR 京町セイカ車載 OR 音街ウナ車載 OR ついなちゃん車載 OR 桜乃そら車載 OR 伊織弓鶴車載 OR 月読アイ車載 OR ギャラ子車載 OR さとうささら車載 OR すずきつづみ車載 OR タカハシ車載 OR ONE車載 OR IA車載 OR 小春六花車載 OR 鳴花ーズ車載 OR flower車載 OR アリアル車載 OR ミリアル車載 OR 四国めたん車載 OR ずんだもん車載"
+keywords = "VOICEPEAK車載 OR VOICEROID車載 OR CeVIO車載 OR ソフトウェアトーク車載 OR A.I.VOICE車載 OR VOICEVOX車載 OR ガイノイドTalk車載 OR Coefont車載"
+dist_ylim = [0, 5000]
+
+[travel]
+title = "ニコニコ ボイロ旅行動画 年次統計"
+keywords = "VOICEROID旅行 OR ソフトウェアトーク旅行"
 dist_ylim = [0, 5000]
 
 [fishing]
@@ -16,4 +21,9 @@ dist_ylim = [0, 40000]
 [kitchen]
 title = "ニコニコ ボイロキッチン動画 年次統計"
 keywords = "VOICEROIDキッチン OR ソフトウェアトークキッチン"
+dist_ylim = [0, 20000]
+
+[theater]
+title = "ニコニコ ボイロ劇場 年次統計"
+keywords = "VOICEROID劇場 OR ソフトウェアトーク劇場"
 dist_ylim = [0, 20000]
