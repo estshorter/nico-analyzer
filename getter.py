@@ -1,3 +1,9 @@
+# /// script
+# dependencies = [
+#   "nicovideo-api-client",
+# ]
+# ///
+
 import pickle
 import sys
 import tomllib
@@ -7,7 +13,7 @@ from nicovideo_api_client.api.v2.snapshot_search_api_v2 import SnapshotSearchAPI
 from nicovideo_api_client.constants import FieldType
 
 LIMIT = 10 * 1000 * 1000
-TIMEOUT = 800.0
+TIMEOUT = 800.0 * 2
 
 def main(category, query):
     # URL生成
@@ -22,6 +28,7 @@ def main(category, query):
                 FieldType.USER_ID,
                 FieldType.VIEW_COUNTER,
                 FieldType.START_TIME,
+                FieldType.TAGS
             }
         )
         .sort(FieldType.START_TIME, reverse=True)

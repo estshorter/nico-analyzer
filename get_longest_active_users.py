@@ -1,9 +1,22 @@
+# /// script
+# dependencies = [
+#   "pandas",
+#   "requests",
+# ]
+# ///
+
+"""
+Processing Overview:
+指定したカテゴリにおいて、現在も活動を続けている（直近1年以内に投稿がある）ユーザーのうち、
+活動開始時期（デビュー日）が最も古い「古参・現役ユーザー」を抽出します。
+ニコニコ静画APIを使用してユーザーのニックネームを取得し、ランキング形式で表示します。
+"""
+
 import sys
 import pickle
 import pandas as pd
 import requests
 import xml.etree.ElementTree as ET
-import datetime
 import time
 
 def get_nickname(user_id):

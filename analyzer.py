@@ -1,8 +1,19 @@
+# /// script
+# dependencies = [
+#   "matplotlib",
+#   "matplotlib-fontja",
+#   "pandas",
+#   "requests",
+#   "seaborn",
+# ]
+# ///
+
 import datetime
 import pickle
 import sys
 import tomllib
 import xml.etree.ElementTree as ET
+from pathlib import Path
 
 import matplotlib_fontja
 import matplotlib.pyplot as plt
@@ -10,13 +21,15 @@ import pandas as pd
 import requests
 import seaborn as sns
 
+from common_utils import filter_software_talk
+
 # SHOW_PLOT = True
 SHOW_PLOT = False
 
 VIOLINPLOT = True
 
 
-def visualize_both(df, category, title):
+def visualize_both(df, category, title, output_dir):
     print("再生数")
     df2 = df[["startTime", "viewCounter"]]
     annualView = df2.resample("YE", on="startTime").sum()
@@ -70,11 +83,11 @@ def visualize_both(df, category, title):
     if SHOW_PLOT:
         plt.show()
     else:
-        plt.savefig(f"results/{category}_annual-both.png", dpi=300, bbox_inches="tight")
+        plt.savefig(output_dir / f"{category}_annual-both.png", dpi=300, bbox_inches="tight")
     plt.close("all")
 
 
-def visualize_newcomer(df: pd.DataFrame, category: str, title: str):
+def visualize_newcomer(df: pd.DataFrame, category: str, title: str, output_dir):
     df2 = df.groupby("userId").min()
     newcommers = {}
     for d in df2["startTime"]:
@@ -101,17 +114,17 @@ def visualize_newcomer(df: pd.DataFrame, category: str, title: str):
     if SHOW_PLOT:
         plt.show()
     else:
-        plt.savefig(f"results/{category}_annual-newcommer.png", dpi=300, bbox_inches="tight")
+        plt.savefig(output_dir / f"{category}_annual-newcommer.png", dpi=300, bbox_inches="tight")
     plt.close("all")
 
 
-def visualize_distribution(df: pd.DataFrame, category: str, title: str, dist_ylim: str):
+def visualize_distribution(df: pd.DataFrame, category: str, title: str, dist_ylim: str, output_dir):
     df2 = df[["startTime", "viewCounter"]].copy()
     df2["startTime"] = df2["startTime"].dt.year
     if VIOLINPLOT:
-        sns.violinplot(data=df2.query("startTime >= 2018/1/1"), x="startTime", y="viewCounter", cut=0, width=0.5)
+        sns.violinplot(data=df2.query("startTime >= 2018"), x="startTime", y="viewCounter", cut=0, width=0.5)
     else:
-        sns.boxplot(data=df2.query("startTime >= 2018/1/1"), x="startTime", y="viewCounter")
+        sns.boxplot(data=df2.query("startTime >= 2018"), x="startTime", y="viewCounter")
 
     plt.gca().set_xlabel("投稿年")
     plt.gca().set_ylabel("再生数")
@@ -123,7 +136,7 @@ def visualize_distribution(df: pd.DataFrame, category: str, title: str, dist_yli
     if SHOW_PLOT:
         plt.show()
     else:
-        plt.savefig(f"results/{category}_annual-distribution.png", dpi=300, bbox_inches="tight")
+        plt.savefig(output_dir / f"{category}_annual-distribution.png", dpi=300, bbox_inches="tight")
     plt.close("all")
 
 
@@ -133,10 +146,10 @@ def tee(msg, f):
     f.write("\n")
 
 
-def show_most_popular_video(df: pd.DataFrame, category):
+def show_most_popular_video(df: pd.DataFrame, category, output_dir):
     print("最大再生数の動画")
     df2 = df
-    with open(f"results/{category}_most_popular.csv", mode="w", encoding="utf8") as f:
+    with open(output_dir / f"{category}_most_popular.csv", mode="w", encoding="utf8") as f:
         for year in range(df2["startTime"].min().year, df2["startTime"].max().year + 1):
             start = f"{year}-01-01T00:00:00+09:00"
             end = f"{year + 1}-01-01T00:00:00+09:00"
@@ -152,7 +165,7 @@ def show_most_popular_video(df: pd.DataFrame, category):
             tee(f"{popular["startTime"]},{root.findtext("user/nickname")},{popular["title"]},{popular["viewCounter"]}", f)
 
 
-def visualize_continuation(df: pd.DataFrame, category: str, title: str):
+def visualize_continuation(df: pd.DataFrame, category: str, title: str, output_dir):
     print("投稿継続分析 (デビュー年別)")
     df_valid = df[df["userId"] != 0]
 
@@ -236,11 +249,11 @@ def visualize_continuation(df: pd.DataFrame, category: str, title: str):
     if SHOW_PLOT:
         plt.show()
     else:
-        plt.savefig(f"results/{category}_continuation.png", dpi=300, bbox_inches="tight")
+        plt.savefig(output_dir / f"{category}_continuation.png", dpi=300, bbox_inches="tight")
     plt.close("all")
 
 
-def visualize_lifespan(df: pd.DataFrame, category: str, title: str):
+def visualize_lifespan(df: pd.DataFrame, category: str, title: str, output_dir):
     print("投稿者寿命分析")
     df_valid = df[df["userId"] != 0]
 
@@ -317,11 +330,11 @@ def visualize_lifespan(df: pd.DataFrame, category: str, title: str):
     if SHOW_PLOT:
         plt.show()
     else:
-        plt.savefig(f"results/{category}_lifespan.png", dpi=300, bbox_inches="tight")
+        plt.savefig(output_dir / f"{category}_lifespan.png", dpi=300, bbox_inches="tight")
     plt.close("all")
 
 
-def visualize_lifespan_thumbnail(df: pd.DataFrame, category: str, title: str):
+def visualize_lifespan_thumbnail(df: pd.DataFrame, category: str, title: str, output_dir):
     print("投稿者寿命分析 (サムネイル・文字なし)")
     df_valid = df[df["userId"] != 0]
 
@@ -402,7 +415,7 @@ def visualize_lifespan_thumbnail(df: pd.DataFrame, category: str, title: str):
         if SHOW_PLOT:
             plt.show()
         else:
-            plt.savefig(f"results/{category}_lifespan_thumbnail.png", dpi=300, bbox_inches="tight", transparent=False)
+            plt.savefig(output_dir / f"{category}_lifespan_thumbnail.png", dpi=300, bbox_inches="tight", transparent=False)
         plt.close("all")
 
 
@@ -411,6 +424,11 @@ def preprocess(category):
         recv = pickle.load(f)
     # print(recv["meta"])
     df = pd.json_normalize(recv["data"])
+
+    # ソフトウェアトークの場合、VOCALOID関連を除外（歌唱系が混じるため）
+    if category == "software_talk":
+        df = filter_software_talk(df)
+
     df["startTime"] = pd.to_datetime(df["startTime"])
     df = df.sort_values("startTime", ignore_index=True)
     df.fillna({"userId": 0}, inplace=True)
@@ -421,14 +439,17 @@ def preprocess(category):
 
 
 def main(category, title, dist_ylim):
+    output_dir = Path("results") / category
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
     df = preprocess(category)
-    visualize_newcomer(df, category, title)
-    visualize_both(df, category, title)
-    visualize_distribution(df, category, title, dist_ylim)
-    visualize_continuation(df, category, title)
-    show_most_popular_video(df, category)
-    visualize_lifespan(df, category, title)
-    visualize_lifespan_thumbnail(df, category, title)
+    visualize_newcomer(df, category, title, output_dir)
+    visualize_both(df, category, title, output_dir)
+    visualize_distribution(df, category, title, dist_ylim, output_dir)
+    visualize_continuation(df, category, title, output_dir)
+    show_most_popular_video(df, category, output_dir)
+    visualize_lifespan(df, category, title, output_dir)
+    # visualize_lifespan_thumbnail(df, category, title, output_dir)
 
 
 if __name__ == "__main__":

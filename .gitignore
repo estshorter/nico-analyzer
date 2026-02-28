@@ -1,6 +1,8 @@
 *.pickle
 *.png
-results/*.csv
+results/
+docs
+icons
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

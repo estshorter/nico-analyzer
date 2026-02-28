@@ -5,12 +5,12 @@ dist_ylim = [0, 5000]
 
 [travel]
 title = "ニコニコ ボイロ旅行動画 年次統計"
-keywords = "VOICEROID旅行 OR ソフトウェアトーク旅行"
+keywords = "VOICEPEAK旅行 OR VOICEROID旅行 OR CeVIO旅行 OR ソフトウェアトーク旅行 OR A.I.VOICE旅行 OR VOICEVOX旅行 OR ガイノイドTalk旅行 OR Coefont旅行"
 dist_ylim = [0, 5000]
 
 [fishing]
 title = "ニコニコ ボイロフィッシング動画 年次統計"
-keywords = "VOICEROIDフィッシング OR ボイスロイド釣り実況 OR ソフトウェアトークフィッシング"
+keywords = "VOICEPEAKフィッシング OR VOICEROIDフィッシング OR CeVIOフィッシング OR ソフトウェアトークフィッシング OR A.I.VOICEフィッシング OR VOICEVOXフィッシング OR ガイノイドTalkフィッシング OR Coefontフィッシング"
 dist_ylim = [0, 20000]
 
 [biim]
@@ -20,10 +20,26 @@ dist_ylim = [0, 40000]
 
 [kitchen]
 title = "ニコニコ ボイロキッチン動画 年次統計"
-keywords = "VOICEROIDキッチン OR ソフトウェアトークキッチン"
+keywords = "VOICEPEAKキッチン OR VOICEROIDキッチン OR CeVIOキッチン OR ソフトウェアトークキッチン OR A.I.VOICEキッチン OR VOICEVOXキッチン OR ガイノイドTalkキッチン OR Coefontキッチン"
 dist_ylim = [0, 20000]
 
 [theater]
 title = "ニコニコ ボイロ劇場 年次統計"
-keywords = "VOICEROID劇場 OR ソフトウェアトーク劇場"
+keywords = "VOICEPEAK劇場 OR VOICEROID劇場 OR CeVIO劇場 OR ソフトウェアトーク劇場 OR A.I.VOICE劇場 OR VOICEVOX劇場 OR ガイノイドTalk劇場 OR Coefont劇場"
 dist_ylim = [0, 20000]
+
+[game]
+title = "ニコニコ ボイロ実況 年次統計"
+keywords = "VOICEPEAK実況プレイ OR VOICEROID実況プレイ OR CeVIO実況プレイ OR ソフトウェアトーク実況プレイ OR A.I.VOICE実況プレイ OR VOICEVOX実況プレイ OR ガイノイドTalk実況プレイ OR Coefont実況プレイ"
+dist_ylim = [0, 20000]
+
+[explanation]
+title = "ニコニコ ボイロ解説 年次統計"
+keywords = "VOICEPEAK解説 OR VOICEROID解説 OR CeVIO解説 OR ソフトウェアトーク解説 OR A.I.VOICE解説 OR VOICEVOX解説 OR ガイノイドTalk解説 OR Coefont解説"
+dist_ylim = [0, 20000]
+
+
+[software_talk]
+title = "ニコニコ ソフトウェアトーク動画 年次統計"
+keywords = "ソフトウェアトーク OR VOICEPEAK OR VOICEROID OR A.I.VOICE OR CeVIO OR VOICEVOX OR ガイノイドTalk OR CoeFont OR COEIROINK"
+dist_ylim = [0, 100000]

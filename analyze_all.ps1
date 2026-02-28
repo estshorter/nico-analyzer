@@ -1,5 +1,6 @@
-python analyzer.py onboard && 
-python analyzer.py fishing && 
-python analyzer.py travel &&
-python analyzer.py kitchen &&
-python analyzer.py biim 
+uv run analyzer.py onboard && 
+uv run analyzer.py fishing && 
+uv run analyzer.py travel &&
+uv run analyzer.py kitchen &&
+uv run analyzer.py biim &&
+uv run analyzer.py software_talk
