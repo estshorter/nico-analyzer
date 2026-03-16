@@ -77,6 +77,7 @@ def visualize_both(df, category, title, output_dir):
     # step4 凡例の追加
     ax.legend(handles=[p1, p2])
 
+    ax.set_axisbelow(True)
     ax.grid(axis='x', linestyle=":", alpha=0.6)
 
     plt.gcf().autofmt_xdate()
@@ -236,6 +237,7 @@ def visualize_continuation(df: pd.DataFrame, category: str, title: str, output_d
 
     # Grid
     # ax1.grid(axis='x')
+    ax1.set_axisbelow(True)
     ax1.grid(axis='x', linestyle=":", alpha=0.6)
     # ax2.grid(axis='y')
 
@@ -302,6 +304,7 @@ def visualize_lifespan(df: pd.DataFrame, category: str, title: str, output_dir):
     ax.yaxis.label.set_color("C0")
     ax.set_title("投稿者寿命分布")
     # ax.set_title(f"{title} (投稿者寿命分布)")
+    ax.set_axisbelow(True)
     ax.grid(axis='y')
     ax.grid(axis='x', linestyle=":", alpha=0.6)
 

@@ -47,16 +47,15 @@ def load_data(category):
     return df
 
 def main():
-    target_categories = ["onboard", "game", "kitchen", "explanation", "theater", "software_talk", "travel", "fishing"]
+    target_categories = ["software_talk", "game", "theater", "explanation", "kitchen", "onboard", "travel"]
     category_labels = {
         "onboard": "車載",
         "game": "実況",
         "kitchen": "キッチン",
         "explanation": "解説",
         "theater": "劇場",
-        "software_talk": "全体(SWT)",
+        "software_talk": "全体",
         "travel": "旅行",
-        "fishing": "釣り",
     }
     
     output_dir = Path("results/comparison")
@@ -108,135 +107,128 @@ def main():
         if platform.system() == "Windows":
             plt.rcParams['font.family'] = ['Meiryo', 'Yu Gothic', 'MS Gothic']
 
-    # 1. 投稿数推移 (Log scale might be needed for Game)
-    plt.figure(figsize=(12, 6))
-    sns.lineplot(data=all_stats, x="year", y="post_count", hue="category_label", marker="o", linewidth=2.5)
-    plt.title("ジャンル別 年間投稿数推移 (2011-2025)", fontsize=16)
-    plt.xlabel("年", fontsize=12)
-    plt.ylabel("投稿数", fontsize=12)
-    plt.legend(title="ジャンル", fontsize=12)
+    # 固定のカラーパレットを定義（プロット間で色を一致させるため）
+    palette = {
+        "全体": "tab:blue",
+        "実況": "tab:orange",
+        "劇場": "tab:green",
+        "解説": "tab:red",
+        "キッチン": "tab:purple",
+        "車載": "tab:brown",
+        "旅行": "tab:pink",
+    }
+
+    # 1. 投稿数推移
+    plt.figure(figsize=(12, 7))
+    sns.lineplot(data=all_stats, x="year", y="post_count", hue="category_label", palette=palette, marker="o", linewidth=2.5)
+    plt.title("ジャンル別 年間投稿数推移 (2011-2025)", fontsize=22)
+    plt.xlabel("年", fontsize=18)
+    plt.ylabel("投稿数", fontsize=18)
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
+    plt.legend(title="ジャンル", fontsize=14, title_fontsize=14)
     plt.grid(True, linestyle="--", alpha=0.7)
     plt.tight_layout()
     plt.savefig(output_dir / "comparison_post_count.png", dpi=300)
     plt.close()
 
-    # 1c. 投稿数推移 (SWT, ゲーム実況を除外) - 他ジャンルの微細な動きを確認用
-    plt.figure(figsize=(12, 6))
+    # 1c. 投稿数推移 (全体・実況除外)
+    plt.figure(figsize=(12, 7))
     minor_stats = all_stats[~all_stats["category"].isin(["software_talk", "game"])]
     if not minor_stats.empty:
-        sns.lineplot(data=minor_stats, x="year", y="post_count", hue="category_label", marker="o", linewidth=2.5)
-        plt.title("ジャンル別 年間投稿数推移 (SWT・実況除外) (2011-2025)", fontsize=16)
-        plt.xlabel("年", fontsize=12)
-        plt.ylabel("投稿数", fontsize=12)
-        plt.legend(title="ジャンル", fontsize=12)
+        sns.lineplot(data=minor_stats, x="year", y="post_count", hue="category_label", palette=palette, marker="o", linewidth=2.5)
+        plt.title("ジャンル別 年間投稿数推移 (全体・実況除外)", fontsize=22)
+        plt.xlabel("年", fontsize=18)
+        plt.ylabel("投稿数", fontsize=18)
+        plt.xticks(fontsize=14)
+        plt.yticks(fontsize=14)
+        plt.legend(title="ジャンル", fontsize=14, title_fontsize=14)
         plt.grid(True, linestyle="--", alpha=0.7)
         plt.tight_layout()
         plt.savefig(output_dir / "comparison_post_count_minor.png", dpi=300)
     plt.close()
 
-    # 1d. 投稿数推移 (SWT, 実況, 劇場, キッチン, 解説を除外)
-    plt.figure(figsize=(12, 6))
+    # 1d. 投稿数推移 (小規模ジャンル)
+    plt.figure(figsize=(12, 7))
     micro_stats = all_stats[~all_stats["category"].isin(["software_talk", "game", "theater", "kitchen", "explanation"])]
     if not micro_stats.empty:
-        sns.lineplot(data=micro_stats, x="year", y="post_count", hue="category_label", marker="o", linewidth=2.5)
-        plt.title("ジャンル別 年間投稿数推移 (小規模ジャンル) (2011-2025)", fontsize=16)
-        plt.xlabel("年", fontsize=12)
-        plt.ylabel("投稿数", fontsize=12)
-        plt.legend(title="ジャンル", fontsize=12)
+        sns.lineplot(data=micro_stats, x="year", y="post_count", hue="category_label", palette=palette, marker="o", linewidth=2.5)
+        plt.title("ジャンル別 年間投稿数推移 (小規模ジャンル)", fontsize=22)
+        plt.xlabel("年", fontsize=18)
+        plt.ylabel("投稿数", fontsize=18)
+        plt.xticks(fontsize=14)
+        plt.yticks(fontsize=14)
+        plt.legend(title="ジャンル", fontsize=14, title_fontsize=14)
         plt.grid(True, linestyle="--", alpha=0.7)
         plt.tight_layout()
         plt.savefig(output_dir / "comparison_post_count_micro.png", dpi=300)
     plt.close()
 
-    # 1b. 投稿数推移 (対数軸) - ゲーム実況が多すぎる場合の確認用
-    plt.figure(figsize=(12, 6))
-    sns.lineplot(data=all_stats, x="year", y="post_count", hue="category_label", marker="o", linewidth=2.5)
-    plt.title("ジャンル別 年間投稿数推移 (対数軸) (2011-2025)", fontsize=16)
-    plt.xlabel("年", fontsize=12)
-    plt.ylabel("投稿数 (Log)", fontsize=12)
-    plt.yscale("log")
-    plt.legend(title="ジャンル", fontsize=12)
-    plt.grid(True, linestyle="--", alpha=0.7, which="both")
-    plt.tight_layout()
-    plt.savefig(output_dir / "comparison_post_count_log.png", dpi=300)
-    plt.close()
-
     # 2. 総再生数推移
-    plt.figure(figsize=(12, 6))
-    sns.lineplot(data=all_stats, x="year", y="total_views", hue="category_label", marker="o", linewidth=2.5)
-    plt.title("ジャンル別 年間総再生数推移 (2011-2025)", fontsize=16)
-    plt.xlabel("年", fontsize=12)
-    plt.ylabel("総再生数", fontsize=12)
+    plt.figure(figsize=(12, 7))
+    sns.lineplot(data=all_stats, x="year", y="total_views", hue="category_label", palette=palette, marker="o", linewidth=2.5)
+    plt.title("ジャンル別 年間総再生数推移 (2011-2025)", fontsize=22)
+    plt.xlabel("年", fontsize=18)
+    plt.ylabel("総再生数 (100万単位)", fontsize=18)
     
-    # Y軸の単位を「億」や「万」にするフォーマッター
     import matplotlib.ticker as ticker
-    def stats_formatter(x, pos):
-        if x >= 10**8:
-            return f'{x/10**8:.1f}億'
-        elif x >= 10**4:
-            return f'{x/10**4:.0f}万'
-        else:
-            return f'{x:.0f}'
-    plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(stats_formatter))
+    def millions_formatter(x, pos):
+        return f'{x/10**6:,.0f}'
+    plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(millions_formatter))
 
-    plt.legend(title="ジャンル", fontsize=12)
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
+    plt.legend(title="ジャンル", fontsize=14, title_fontsize=14)
     plt.grid(True, linestyle="--", alpha=0.7)
     plt.tight_layout()
     plt.savefig(output_dir / "comparison_total_views.png", dpi=300)
     plt.close()
     
-    # 2c. 総再生数推移 (SWT, ゲーム実況を除外)
-    plt.figure(figsize=(12, 6))
+    # 2c. 総再生数推移 (全体・実況除外)
+    plt.figure(figsize=(12, 7))
     if not minor_stats.empty:
-        sns.lineplot(data=minor_stats, x="year", y="total_views", hue="category_label", marker="o", linewidth=2.5)
-        plt.title("ジャンル別 年間総再生数推移 (SWT・実況除外) (2011-2025)", fontsize=16)
-        plt.xlabel("年", fontsize=12)
-        plt.ylabel("総再生数", fontsize=12)
-        plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(stats_formatter))
-        plt.legend(title="ジャンル", fontsize=12)
+        sns.lineplot(data=minor_stats, x="year", y="total_views", hue="category_label", palette=palette, marker="o", linewidth=2.5)
+        plt.title("ジャンル別 年間総再生数推移 (全体・実況除外)", fontsize=22)
+        plt.xlabel("年", fontsize=18)
+        plt.ylabel("総再生数 (100万単位)", fontsize=18)
+        plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(millions_formatter))
+        plt.xticks(fontsize=14)
+        plt.yticks(fontsize=14)
+        plt.legend(title="ジャンル", fontsize=14, title_fontsize=14)
         plt.grid(True, linestyle="--", alpha=0.7)
         plt.tight_layout()
         plt.savefig(output_dir / "comparison_total_views_minor.png", dpi=300)
     plt.close()
     
     # 2d. 総再生数推移 (小規模ジャンル)
-    plt.figure(figsize=(12, 6))
+    plt.figure(figsize=(12, 7))
+    micro_stats = all_stats[~all_stats["category"].isin(["software_talk", "game", "theater", "kitchen", "explanation"])]
     if not micro_stats.empty:
-        sns.lineplot(data=micro_stats, x="year", y="total_views", hue="category_label", marker="o", linewidth=2.5)
-        plt.title("ジャンル別 年間総再生数推移 (小規模ジャンル) (2011-2025)", fontsize=16)
-        plt.xlabel("年", fontsize=12)
-        plt.ylabel("総再生数", fontsize=12)
-        plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(stats_formatter))
-        plt.legend(title="ジャンル", fontsize=12)
+        sns.lineplot(data=micro_stats, x="year", y="total_views", hue="category_label", palette=palette, marker="o", linewidth=2.5)
+        plt.title("ジャンル別 年間総再生数推移 (小規模ジャンル)", fontsize=22)
+        plt.xlabel("年", fontsize=18)
+        plt.ylabel("総再生数 (100万単位)", fontsize=18)
+        plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(millions_formatter))
+        plt.xticks(fontsize=14)
+        plt.yticks(fontsize=14)
+        plt.legend(title="ジャンル", fontsize=14, title_fontsize=14)
         plt.grid(True, linestyle="--", alpha=0.7)
         plt.tight_layout()
         plt.savefig(output_dir / "comparison_total_views_micro.png", dpi=300)
     plt.close()
 
-    # 2b. 総再生数推移 (対数軸)
-        
-    plt.figure(figsize=(12, 6))
-    sns.lineplot(data=all_stats, x="year", y="total_views", hue="category_label", marker="o", linewidth=2.5)
-    plt.title("ジャンル別 年間総再生数推移 (対数軸) (2011-2025)", fontsize=16)
-    plt.xlabel("年", fontsize=12)
-    plt.ylabel("総再生数 (Log)", fontsize=12)
-    plt.yscale("log")
-    plt.legend(title="ジャンル", fontsize=12)
-    plt.grid(True, linestyle="--", alpha=0.7, which="both")
-    plt.tight_layout()
-    plt.savefig(output_dir / "comparison_total_views_log.png", dpi=300)
-    plt.close()
-
-    # 3. 再生数中央値推移 (1動画あたりのポテンシャル)
-    plt.figure(figsize=(12, 6))
-    sns.lineplot(data=all_stats, x="year", y="median_views", hue="category_label", marker="o", linewidth=2.5)
-    plt.title("ジャンル別 再生数中央値推移 (2011-2025)", fontsize=16)
-    plt.xlabel("年", fontsize=12)
-    plt.ylabel("再生数中央値", fontsize=12)
-    plt.legend(title="ジャンル", fontsize=12)
+    # 3. 再生数中央値推移
+    plt.figure(figsize=(12, 7))
+    sns.lineplot(data=all_stats, x="year", y="median_views", hue="category_label", palette=palette, marker="o", linewidth=2.5)
+    plt.title("ジャンル別 再生数中央値推移 (2011-2025)", fontsize=22)
+    plt.xlabel("年", fontsize=18)
+    plt.ylabel("再生数中央値", fontsize=18)
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
+    plt.legend(title="ジャンル", fontsize=14, title_fontsize=14)
     plt.grid(True, linestyle="--", alpha=0.7)
     plt.tight_layout()
-    plt.savefig(output_dir / "comparison_median_views.png", dpi=300)
+    # plt.savefig(output_dir / "comparison_median_views.png", dpi=300)
     plt.close()
 
     print("Comparison graphs generated in results/comparison/")

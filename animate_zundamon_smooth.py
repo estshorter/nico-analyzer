@@ -67,6 +67,7 @@ def main():
             ax.set_ylim(0, max(counts) * 1.1)
             ax.set_title("ずんだもん累計再生数の推移 (2020-2025)", fontweight='bold', pad=30)
             ax.set_ylabel("累計再生数 (万回)", fontweight='bold')
+            ax.set_axisbelow(True)
             ax.grid(True, axis='y', linestyle='--', alpha=0.4)
 
             # Y軸の目盛りを「万」単位にする

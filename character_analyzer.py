@@ -75,12 +75,17 @@ def main(category):
     mapping_df.to_csv(output_dir / f"{category}_character_mapping.csv", index=False, encoding="utf-8-sig")
 
     # 4. Calculate rankings
-    print("Calculating view rankings...")
+    print("Calculating rankings...")
     char_views = mapping_df.groupby("character")["viewCounter"].sum().sort_values(ascending=False).reset_index()
     char_views.to_csv(output_dir / f"{category}_character_ranking_overall.csv", index=False, encoding="utf-8-sig")
 
+    char_counts = mapping_df.groupby("character")["contentId"].nunique().sort_values(ascending=False).reset_index()
+    char_counts.columns = ["character", "postCount"]
+    char_counts.to_csv(output_dir / f"{category}_character_ranking_overall_count.csv", index=False, encoding="utf-8-sig")
+
     # 5. Visualization - Rankings
     print("Visualizing rankings...")
+    # View Ranking
     plt.figure(figsize=(12, 8))
     top_overall = char_views.head(20)
     sns.barplot(data=top_overall, x="viewCounter", y="character", hue="character", palette="viridis", legend=False)
@@ -89,23 +94,51 @@ def main(category):
     plt.savefig(output_dir / f"{category}_character_ranking_overall.png")
     plt.close()
 
+    # Post Count Ranking
+    plt.figure(figsize=(12, 8))
+    top_overall_count = char_counts.head(20)
+    sns.barplot(data=top_overall_count, x="postCount", y="character", hue="character", palette="viridis", legend=False)
+    plt.title(f"{category} キャラクター別総投稿数ランキング (TOP 20)")
+    plt.xlabel("投稿数")
+    plt.tight_layout()
+    plt.savefig(output_dir / f"{category}_character_ranking_overall_count.png")
+    plt.close()
+
     # 5b. Yearly Rankings (Top 20 per year)
     print("Visualizing yearly rankings...")
     all_years = [y for y in range(2017, 2026)]
+    
+    # Yearly View Ranking
     fig, axes = plt.subplots(3, 3, figsize=(24, 20))
     axes = axes.flatten()
-    
     for i, year in enumerate(all_years):
         year_data = mapping_df[mapping_df["year"] == year].groupby("character")["viewCounter"].sum().sort_values(ascending=False).head(20).reset_index()
         if not year_data.empty:
             sns.barplot(data=year_data, x="viewCounter", y="character", ax=axes[i], hue="character", palette="magma", legend=False)
-            axes[i].set_title(f"{year}年 (TOP 20)", fontsize=16)
+            axes[i].set_title(f"{year}年 (TOP 20 - 再生数)", fontsize=16)
             axes[i].set_xlabel("再生数")
             axes[i].set_ylabel("")
         else:
             axes[i].set_title(f"{year}年 (データなし)", fontsize=16)
     plt.tight_layout()
     plt.savefig(output_dir / f"{category}_character_ranking_yearly.png")
+    plt.close()
+
+    # Yearly Post Count Ranking
+    fig, axes = plt.subplots(3, 3, figsize=(24, 20))
+    axes = axes.flatten()
+    for i, year in enumerate(all_years):
+        year_data = mapping_df[mapping_df["year"] == year].groupby("character")["contentId"].nunique().sort_values(ascending=False).head(20).reset_index()
+        year_data.columns = ["character", "postCount"]
+        if not year_data.empty:
+            sns.barplot(data=year_data, x="postCount", y="character", ax=axes[i], hue="character", palette="magma", legend=False)
+            axes[i].set_title(f"{year}年 (TOP 20 - 投稿数)", fontsize=16)
+            axes[i].set_xlabel("投稿数")
+            axes[i].set_ylabel("")
+        else:
+            axes[i].set_title(f"{year}年 (データなし)", fontsize=16)
+    plt.tight_layout()
+    plt.savefig(output_dir / f"{category}_character_ranking_yearly_count.png")
     plt.close()
 
     # 6. Co-occurrence Matrix

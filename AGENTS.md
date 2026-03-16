@@ -1,5 +1,16 @@
 # AI Agent Guidance
 
+## Environment Management
+
+### Python Environment
+When executing Python scripts or managing dependencies, you **must** use `uv`.
+
+- **Reason**: `uv` provides faster and more reliable environment management.
+- **Commands**:
+  - Run a script: `uv run <script_path>`
+  - Install dependencies: `uv pip install <package_name>`
+  - Add to requirements: `uv add <package_name>`
+
 ## Data Preprocessing Rules
 
 ### Software Talk Data Filtering

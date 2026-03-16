@@ -1,3 +1,9 @@
+# /// script
+# dependencies = [
+#   "pandas",
+# ]
+# ///
+
 """
 Processing Overview:
 外部サイト（nicochart.jp）からニコニコ動画全体の年間統計情報（投稿数・再生数）を取得します。
