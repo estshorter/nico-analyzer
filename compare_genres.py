@@ -150,7 +150,7 @@ def main():
 
     # 1d. 投稿数推移 (小規模ジャンル)
     plt.figure(figsize=(12, 7))
-    micro_stats = all_stats[~all_stats["category"].isin(["software_talk", "game", "theater", "kitchen", "explanation"])]
+    micro_stats = all_stats[~all_stats["category"].isin(["software_talk", "game", "theater","explanation"])]
     if not micro_stats.empty:
         sns.lineplot(data=micro_stats, x="year", y="post_count", hue="category_label", palette=palette, marker="o", linewidth=2.5)
         plt.title("ジャンル別 年間投稿数推移 (小規模ジャンル)", fontsize=22)
@@ -202,7 +202,7 @@ def main():
     
     # 2d. 総再生数推移 (小規模ジャンル)
     plt.figure(figsize=(12, 7))
-    micro_stats = all_stats[~all_stats["category"].isin(["software_talk", "game", "theater", "kitchen", "explanation"])]
+    micro_stats = all_stats[~all_stats["category"].isin(["software_talk", "game", "theater", "explanation"])]
     if not micro_stats.empty:
         sns.lineplot(data=micro_stats, x="year", y="total_views", hue="category_label", palette=palette, marker="o", linewidth=2.5)
         plt.title("ジャンル別 年間総再生数推移 (小規模ジャンル)", fontsize=22)
@@ -211,6 +211,7 @@ def main():
         plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(millions_formatter))
         plt.xticks(fontsize=14)
         plt.yticks(fontsize=14)
+        plt.ylim(top=14000000)
         plt.legend(title="ジャンル", fontsize=14, title_fontsize=14)
         plt.grid(True, linestyle="--", alpha=0.7)
         plt.tight_layout()

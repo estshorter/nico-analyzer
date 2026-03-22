@@ -36,10 +36,11 @@ def main():
     for i, bar in enumerate(bars_nico):
         height = bar.get_height()
         year = df_filtered['year'].iloc[i]
-        color = '#222222' if year in [2023, 2025] else 'dimgray'
-        weight = 'bold' if year in [2023, 2025] else 'normal'
-        ax1.text(bar.get_x() + bar.get_width()/2., height,
-                format_jp_large(height, None), ha='center', va='bottom', fontsize=12, color=color, fontweight=weight)
+        if year in [2023, 2025]:
+            color = '#222222'
+            weight = 'bold'
+            ax1.text(bar.get_x() + bar.get_width()/2., height,
+                    format_jp_large(height, None), ha='center', va='bottom', fontsize=18, color=color, fontweight=weight)
 
     ax1.set_ylabel('再生数')
     ax1.set_title('ニコニコ全体：年間再生数の推移 (2020-2025)', fontsize=16)
@@ -64,10 +65,11 @@ def main():
     for i, bar in enumerate(bars_voiro):
         height = bar.get_height()
         year = df_filtered['year'].iloc[i]
-        color = 'darkblue' if year in [2023, 2025] else 'tab:blue'
-        weight = 'bold' if year in [2023, 2025] else 'normal'
-        ax2.text(bar.get_x() + bar.get_width()/2., height,
-                f'{int(height):,}', ha='center', va='bottom', fontsize=12, color=color, fontweight=weight)
+        if year in [2023, 2025]:
+            color = 'darkblue'
+            weight = 'bold'
+            ax2.text(bar.get_x() + bar.get_width()/2., height,
+                    f'{int(height):,}', ha='center', va='bottom', fontsize=18, color=color, fontweight=weight)
 
     ax2.set_ylabel('投稿数')
     ax2.set_title('ボイロ全体：年間投稿数の推移 (2020-2025)', fontsize=16)

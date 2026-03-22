@@ -27,6 +27,7 @@ def main(category, query):
                 FieldType.TITLE,
                 FieldType.USER_ID,
                 FieldType.VIEW_COUNTER,
+                FieldType.LENGTH_SECONDS,
                 FieldType.START_TIME,
                 FieldType.TAGS
             }

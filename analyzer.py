@@ -35,8 +35,8 @@ def visualize_both(df, category, title, output_dir):
     annualView = df2.resample("YE", on="startTime").sum()
 
     # 2025年まで表示するようにインデックスを調整
-    start_dt = annualView.index.min()
-    end_dt = pd.Timestamp("2025-12-31").tz_localize(start_dt.tz)
+    start_dt = pd.Timestamp("2011-12-31").tz_localize(annualView.index.tz)
+    end_dt = pd.Timestamp("2025-12-31").tz_localize(annualView.index.tz)
     target_index = pd.date_range(start=start_dt, end=end_dt, freq="YE")
     annualView = annualView.reindex(target_index, fill_value=0)
     x = [d.year for d in annualView.index]
@@ -89,43 +89,103 @@ def visualize_both(df, category, title, output_dir):
 
 
 def visualize_newcomer(df: pd.DataFrame, category: str, title: str, output_dir):
+    df = df[df["userId"] != 0].copy()
+    df["year"] = df["startTime"].dt.year
+    total_posters = df.groupby("year")["userId"].nunique().to_dict()
+
     df2 = df.groupby("userId").min()
     newcommers = {}
     for d in df2["startTime"]:
         current = newcommers.get(d.year, 0)
         newcommers[d.year] = current + 1
-    newcommers_list = sorted(newcommers.items())
-    print("新規投稿者数")
-    print("year, count")
-    for year, count in newcommers_list:
-        print(f"{year}, {count:5d}")
+
+    x = list(range(2011, 2026))
+    y_total = [total_posters.get(x_, 0) for x_ in x]
+    y_new = [newcommers.get(x_, 0) for x_ in x]
+    y_existing = [t - n for t, n in zip(y_total, y_new)]
+
+    print("投稿者数と新規投稿者数")
+    print("year, total, new, existing")
+    for year, t, n, e in zip(x, y_total, y_new, y_existing):
+        print(f"{year}, {t:5d}, {n:5d}, {e:5d}")
     print("=======")
-    x = list(range(newcommers_list[0][0], newcommers_list[-1][0] + 1))
-    y = [newcommers.get(x_, 0) for x_ in x]
 
-    # step3 折れ線グラフの描画
-    (p1,) = plt.plot(x, y, marker="o", color="C0", label="新規投稿者数")
-    plt.gca().set_xlabel("投稿年")
-    plt.gca().set_ylabel("新規投稿者数")
-    plt.gca().set_title(title)
+    fig, ax1 = plt.subplots()
 
-    plt.gca().yaxis.get_label().set_color(p1.get_color())
-    plt.grid()
-    plt.gcf().autofmt_xdate()
+    # 積み上げ棒グラフ
+    p1 = ax1.bar(x, y_existing, label="既存投稿者", color="C0")
+    p2 = ax1.bar(x, y_new, bottom=y_existing, label="新規投稿者", color="C1")
+
+    ax1.set_xlabel("投稿年")
+    ax1.set_ylabel("投稿者数")
+    ax1.set_title(title)
+    ax1.legend()
+
+    ax1.set_axisbelow(True)
+    ax1.grid(axis='y', linestyle=":", alpha=0.6)
+
+    fig.autofmt_xdate()
     if SHOW_PLOT:
         plt.show()
     else:
-        plt.savefig(output_dir / f"{category}_annual-newcommer.png", dpi=300, bbox_inches="tight")
+        fig.savefig(output_dir / f"{category}_annual-newcommer.png", dpi=300, bbox_inches="tight")
     plt.close("all")
 
+def visualize_newcomer_emphasis(df: pd.DataFrame, category: str, title: str, output_dir, emphasis_years=[2023, 2025]):
+    df = df[df["userId"] != 0].copy()
+    df["year"] = df["startTime"].dt.year
+    total_posters = df.groupby("year")["userId"].nunique().to_dict()
+
+    df2 = df.groupby("userId").min()
+    newcommers = {}
+    for d in df2["startTime"]:
+        current = newcommers.get(d.year, 0)
+        newcommers[d.year] = current + 1
+
+    # 2020年以降に限定
+    x = list(range(2020, 2026))
+    y_total = [total_posters.get(x_, 0) for x_ in x]
+    y_new = [newcommers.get(x_, 0) for x_ in x]
+    y_existing = [t - n for t, n in zip(y_total, y_new)]
+
+    fig, ax1 = plt.subplots()
+
+    alphas = [1.0 if year in emphasis_years else 0.2 for year in x]
+
+    # 棒グラフ (強調あり - 新規・既存をまとめ)
+    for i, year in enumerate(x):
+        label = "投稿者数" if i == 0 else ""
+        ax1.bar(year, y_total[i], color="C0", alpha=alphas[i], label=label)
+        
+        # 2023年と2025年に数値を表示
+        if year in emphasis_years:
+            ax1.text(year, y_total[i], f"{y_total[i]:,}", ha='center', va='bottom', fontweight='bold', fontsize=12)
+
+    ax1.set_xlabel("投稿年")
+    ax1.set_ylabel("投稿者数")
+    ax1.set_title(f"{title} (強調: {', '.join(map(str, emphasis_years))})")
+    ax1.legend()
+
+    ax1.set_axisbelow(True)
+    ax1.grid(axis='y', linestyle=":", alpha=0.6)
+
+    # y軸の範囲を調整してラベルが切れないようにする
+    ax1.set_ylim(0, max(y_total) * 1.15)
+
+    fig.autofmt_xdate()
+    if SHOW_PLOT:
+        plt.show()
+    else:
+        fig.savefig(output_dir / f"{category}_annual-newcommer-emphasis.png", dpi=300, bbox_inches="tight")
+    plt.close("all")
 
 def visualize_distribution(df: pd.DataFrame, category: str, title: str, dist_ylim: str, output_dir):
     df2 = df[["startTime", "viewCounter"]].copy()
     df2["startTime"] = df2["startTime"].dt.year
     if VIOLINPLOT:
-        sns.violinplot(data=df2.query("startTime >= 2018"), x="startTime", y="viewCounter", cut=0, width=0.5)
+        sns.violinplot(data=df2.query("2018 <= startTime < 2026"), x="startTime", y="viewCounter", cut=0, width=0.5)
     else:
-        sns.boxplot(data=df2.query("startTime >= 2018"), x="startTime", y="viewCounter")
+        sns.boxplot(data=df2.query("2018 <= startTime < 2026"), x="startTime", y="viewCounter")
 
     plt.gca().set_xlabel("投稿年")
     plt.gca().set_ylabel("再生数")
@@ -184,7 +244,7 @@ def visualize_continuation(df: pd.DataFrame, category: str, title: str, output_d
 
     # Range of debut years
     min_year = user_debut.min()
-    max_year = user_debut.max()
+    max_year = min(user_debut.max(), 2025)
 
     years = []
     counts = []
@@ -447,6 +507,8 @@ def main(category, title, dist_ylim):
     
     df = preprocess(category)
     visualize_newcomer(df, category, title, output_dir)
+    if category == "software_talk":
+        visualize_newcomer_emphasis(df, category, title, output_dir, emphasis_years=[2023, 2025])
     visualize_both(df, category, title, output_dir)
     visualize_distribution(df, category, title, dist_ylim, output_dir)
     visualize_continuation(df, category, title, output_dir)

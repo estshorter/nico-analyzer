@@ -57,7 +57,7 @@ def calculate_stats(df):
 
 def main():
     # 対象カテゴリー
-    categories = ["software_talk", "explanation", "onboard"]
+    categories = ["explanation", "onboard"]
     labels = {
         "software_talk": "全体", 
         "explanation": "解説", 
