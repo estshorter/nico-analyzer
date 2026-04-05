@@ -1,0 +1,124 @@
+{
+  "counts": {
+    "onboard": 39061,
+    "travel": 16149,
+    "kitchen": 27398,
+    "explanation": 54360,
+    "theater": 124239,
+    "game": 622607,
+    "software_talk": 1042108
+  },
+  "video_count": 1042108,
+  "total": 1925922,
+  "ranks": {
+    "Zundamon": {
+      "overall": 5,
+      "onboard": 16
+    },
+    "Zunko": {
+      "overall": 11,
+      "onboard": 7
+    },
+    "Una": {
+      "overall": 18,
+      "onboard": -1
+    },
+    "Yukari": {
+      "overall": 1,
+      "onboard": 1
+    },
+    "紡乃世詞音": {
+      "overall": -1,
+      "onboard": 19
+    },
+    "Himari": {
+      "overall": 15,
+      "onboard": 11
+    },
+    "フィーちゃん": {
+      "overall": -1,
+      "onboard": 20
+    },
+    "Aoi": {
+      "overall": 7,
+      "onboard": 8
+    },
+    "Akari": {
+      "overall": 3,
+      "onboard": 2
+    },
+    "つくよみちゃん": {
+      "overall": 17,
+      "onboard": -1
+    },
+    "Rikka": {
+      "overall": 10,
+      "onboard": 3
+    },
+    "Itako": {
+      "overall": 14,
+      "onboard": -1
+    },
+    "Tsumugi": {
+      "overall": 6,
+      "onboard": 15
+    },
+    "Metan": {
+      "overall": 9,
+      "onboard": -1
+    },
+    "Karin": {
+      "overall": 16,
+      "onboard": 10
+    },
+    "Akane": {
+      "overall": 2,
+      "onboard": 4
+    },
+    "Kiritan": {
+      "overall": 4,
+      "onboard": 5
+    },
+    "京町セイカ": {
+      "overall": -1,
+      "onboard": 14
+    },
+    "Chifuyu": {
+      "overall": -1,
+      "onboard": 9
+    },
+    "Moka": {
+      "overall": 12,
+      "onboard": 12
+    },
+    "Tsudumi": {
+      "overall": -1,
+      "onboard": 17
+    },
+    "WhiteCUL": {
+      "overall": 13,
+      "onboard": 18
+    },
+    "Minato": {
+      "overall": 20,
+      "onboard": 13
+    },
+    "Maki": {
+      "overall": 8,
+      "onboard": 6
+    },
+    "Sasara": {
+      "overall": 19,
+      "onboard": -1
+    }
+  },
+  "anomaly": {
+    "target": [
+      "Rikka",
+      "Karin",
+      "Chifuyu"
+    ],
+    "genre": "onboard",
+    "message": "ANOMALY DETECTED: ABNORMAL SURGE - ONBOARD SECTOR"
+  }
+}

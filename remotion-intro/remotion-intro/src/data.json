@@ -1,0 +1,22 @@
+{
+  "counts": {
+    "onboard": 0,
+    "travel": 0,
+    "kitchen": 0,
+    "explanation": 0,
+    "theater": 0,
+    "game": 0,
+    "software_talk": 0
+  },
+  "total": 0,
+  "ranks": {},
+  "anomaly": {
+    "target": [
+      "小春六花",
+      "夏色花梨",
+      "花隈千冬"
+    ],
+    "genre": "onboard",
+    "message": "ANOMALY DETECTED: ABNORMAL SURGE IN ONBOARD SECTOR"
+  }
+}
