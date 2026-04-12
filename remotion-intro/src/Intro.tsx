@@ -9,16 +9,16 @@ export const Intro: React.FC = () => {
   return (
     <AbsoluteFill style={{ backgroundColor: "#0a0a0a", color: "#00ffcc", fontFamily: "monospace" }}>
       {/* 
-        10秒凝縮・クリフハンガー構成：
-        1. Data Loading (0s - 3.5s = 105f): カウント完了後のタメ
-        2. Shift Analysis (3.5s - 10s = 195f): メインのスロープグラフと異常検知。警告が出た状態でブツッと終わる。
+        構成：
+        1. Data Loading (0s - 8s = 240f): タイピングとカウント完了
+        2. Shift Analysis (8s - 14.6s = 200f): メインのスロープグラフと異常検知。
       */}
       
-      <Sequence from={0} durationInFrames={105}>
+      <Sequence from={0} durationInFrames={240}>
         <Phase1DataLoading data={data} />
       </Sequence>
 
-      <Sequence from={105} durationInFrames={195}>
+      <Sequence from={240} durationInFrames={200}>
         <Phase2ShiftAnalysis data={data} />
       </Sequence>
     </AbsoluteFill>

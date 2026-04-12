@@ -83,6 +83,7 @@ export const Phase2ShiftAnalysis: React.FC<{ data: any }> = ({ data }) => {
         <div style={{ 
           position: "absolute", bottom: 80, left: "50%", transform: "translateX(-50%)", 
           fontSize: 60, color: "#ffff00", fontWeight: "bold", textShadow: "0 0 20px #ffff00", 
+          whiteSpace: "nowrap",
           opacity: frame % 12 < 6 ? 1 : 0.3, border: "4px solid #ffff00", padding: "10px 40px", backgroundColor: "rgba(255, 0, 0, 0.2)"
         }}>
           {anomaly.message}

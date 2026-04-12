@@ -2,7 +2,7 @@ import React from 'react';
 import { AbsoluteFill, useCurrentFrame, useVideoConfig, spring, interpolate, staticFile } from 'remotion';
 import data from './data/ranks.json';
 
-const GENRES = ["overall", "game", "explanation", "kitchen", "theater", "onboard", "travel"];
+const GENRES = ["overall", "game", "explanation", "kitchen", "theater", "travel", "onboard"];
 const GENRE_LABELS: Record<string, string> = {
   overall: "全体",
   game: "実況",
@@ -46,12 +46,11 @@ export const SlopeGraph: React.FC = () => {
   const RANK_SPACING = PLOT_HEIGHT / 10;
 
   const getRankY = (rank: number) => {
-    if (rank > 10 || rank < 1) return height + 1000;
     return PADDING_TOP + (rank - 0.5) * RANK_SPACING;
   };
 
   const getCharDisplayName = (char: typeof data.characters[0]) => {
-    return char.id === 'whitecul' ? '雪さん' : char.name;
+    return char.id === 'whitecul' ? 'WhiteCUL' : char.name;
   };
 
   const isHighlighted = (charId: string, genre: string) => {
@@ -61,7 +60,7 @@ export const SlopeGraph: React.FC = () => {
     if (genre === 'kitchen' && ['yukari', 'zundamon'].includes(charId)) return true;
     if (genre === 'theater' && ['akane', 'yukari', 'moka'].includes(charId)) return true;
     if (genre === 'onboard' && ['rikka', 'karin', 'chifuyu', 'zundamon'].includes(charId)) return true;
-    if (genre === 'travel' && ['minato', 'whitecul', 'zundamon'].includes(charId)) return true;
+    if (genre === 'travel' && ['minato', 'rikka'].includes(charId)) return true;
     return false;
   };
 
@@ -123,7 +122,7 @@ export const SlopeGraph: React.FC = () => {
           if (finalOpacity === 0) return null;
 
           return (
-            <g key={char.id} style={{ filter: highlighted ? `drop-shadow(0 0 10px ${char.color})` : 'none' }}>
+            <g key={char.id}>
               <path
                 d={`M ${AXIS_LEFT} ${yLeft} L ${AXIS_RIGHT} ${yRight}`}
                 stroke={char.color}
@@ -134,13 +133,6 @@ export const SlopeGraph: React.FC = () => {
             </g>
           );
         })}
-
-        {!isIntro && displayGenre === 'game' && (
-          <g opacity={rightAxisOpacity * 0.6}>
-            <circle cx={(AXIS_LEFT + AXIS_RIGHT) / 2} cy={getRankY(3.5)} r={40} fill="none" stroke="#ef4444" strokeWidth="4" strokeDasharray="10 5" />
-            <circle cx={(AXIS_LEFT + AXIS_RIGHT) / 2} cy={getRankY(7)} r={40} fill="none" stroke="#ef4444" strokeWidth="4" strokeDasharray="10 5" />
-          </g>
-        )}
       </svg>
 
       {/* Characters Icons & Names */}
@@ -166,7 +158,6 @@ export const SlopeGraph: React.FC = () => {
                   transform: 'translate(-50%, -50%)',
                   width: 90, height: 90, borderRadius: '50%', 
                   border: `5px solid ${char.color}`,
-                  boxShadow: '0 8px 24px rgba(0,0,0,0.7)',
                   backgroundColor: '#1e293b'
                 }} />
                 <div style={{ 
@@ -191,7 +182,6 @@ export const SlopeGraph: React.FC = () => {
                   transform: 'translate(-50%, -50%)',
                   width: 90, height: 90, borderRadius: '50%', 
                   border: `5px solid ${char.color}`,
-                  boxShadow: highlighted ? `0 0 30px ${char.color}` : '0 8px 24px rgba(0,0,0,0.7)',
                   backgroundColor: '#1e293b'
                 }} />
                 <div style={{ 
@@ -202,7 +192,7 @@ export const SlopeGraph: React.FC = () => {
                   fontSize: 36, 
                   fontWeight: 800, 
                   color: highlighted ? char.color : '#f8fafc',
-                  textShadow: highlighted ? `0 0 15px ${char.color}` : '0 4px 8px rgba(0,0,0,0.9)'
+                  textShadow: '0 4px 8px rgba(0,0,0,0.9)'
                 }}>
                   {charName}
                 </div>

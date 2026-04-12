@@ -64,20 +64,21 @@ def generate_remotion_data():
         "春日部つむぎ": {"id": "tsumugi", "color": "#FFD700", "icon": "春日部つむぎ.png"},
         "弦巻マキ": {"id": "maki", "color": "#FF4500", "icon": "弦巻マキ.png"},
         "四国めたん": {"id": "metan", "color": "#FF69B4", "icon": "四国めたん.png"},
-        "小春六花": {"id": "rikka", "color": "#6f93a0", "icon": "小春六花.png"},
-        "夏色花梨": {"id": "karin", "color": "#97217f", "icon": "夏色花梨.png"},
+        "小春六花": {"id": "rikka", "color": "#a4d9ec", "icon": "小春六花.png"},
+        "夏色花梨": {"id": "karin", "color": "#e331bf", "icon": "夏色花梨.png"},
         "花隈千冬": {"id": "chifuyu", "color": "#98FB98", "icon": "花熊千冬.png"},
         "東北ずん子": {"id": "zunko", "color": "#98FB98", "icon": "東北ずん子.png"},
         "東北イタコ": {"id": "itako", "color": "#57d5ec", "icon": "東北イタコ.png"}, # 明るいパープル
-        "宮舞モカ": {"id": "moka", "color": "#4682B4", "icon": "宮舞モカ.png"},
+        "宮舞モカ": {"id": "moka", "color": "#49ffec", "icon": "宮舞モカ.png"},
         "冥鳴ひまり": {"id": "himari", "color": "#9370DB", "icon": "冥鳴ひまり.png"},
         "双葉湊音": {"id": "minato", "color": "#0071f2", "icon": "双葉湊音.png"}, # シアン/アクア
-        "WhiteCUL": {"id": "whitecul", "color": "#3ab7ff", "icon": "WhiteCUL.png"}, # ホワイト
+        "WhiteCUL": {"id": "whitecul", "color": "#3ab7ff", "icon": "WhiteCUL.png", "display_name": "WhiteCUL"}, # ホワイト
         "重音テト": {"id": "teto", "color": "#FF6347", "icon": "重音テト.png"},
         "すずきつづみ": {"id": "tsudumi", "color": "#4169E1", "icon": "すずきつづみ.png"},
         "さとうささら": {"id": "sasara", "color": "#FFB6C1", "icon": "さとうささら.png"},
         "音街ウナ": {"id": "una", "color": "#000080", "icon": "音街ウナ.png"},
         "もち子さん": {"id": "mochiko", "color": "#909090", "icon": "もち子さん.png"}, # グレー
+        "ナースロボ_タイプt": {"id": "typet", "color": "#ffcb83", "icon": "ナースロボ_タイプt.png", "display_name": "ナースロボ_タイプT"}, # ホワイト
     }
 
     # 順位データ構築
@@ -88,14 +89,21 @@ def generate_remotion_data():
             if char_name in genres_data[genre]:
                 rank = genres_data[genre].index(char_name) + 1
             else:
-                rank = 11 # 圏外は11とする
+                # 圏外の個別対応
+                if genre == "overall":
+                    if char_name == "花隈千冬": rank = 23
+                    elif char_name == "もち子さん": rank = 28
+                    elif char_name == "ナースロボ_タイプt": rank = 32
+                    else: rank = 30 # デフォルト圏外
+                else:
+                    rank = 21 # ジャンル別圏外
             ranks[genre] = rank
             
         info = char_info_map.get(char_name, {"id": char_name, "color": "#888888", "icon": f"{char_name}.png"})
         
         characters.append({
             "id": info["id"],
-            "name": char_name,
+            "name": info.get("display_name", char_name),
             "icon": f"/icons/{info['icon']}",
             "color": info["color"],
             "ranks": ranks

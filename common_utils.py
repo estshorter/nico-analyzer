@@ -22,6 +22,7 @@ def filter_software_talk(df: pd.DataFrame) -> pd.DataFrame:
 def find_characters(tags, character_names):
     """
     動画のタグからキャラクターを抽出する共通ロジック。
+    大文字小文字を区別せずに（case-insensitive）検索します。
     """
     if not tags:
         return []
@@ -34,14 +35,21 @@ def find_characters(tags, character_names):
     else:
         return []
         
+    # 検索用に小文字化した文字列とリストを用意
+    tags_str_lower = tags_str.lower()
+    tag_list_lower = [t.lower() for t in tag_list]
+        
     found = []
     # 短い名前や一般的な単語と被りやすい名前は完全一致、それ以外は部分一致
     exact_match_chars = ["RIA", "朱花", "青葉", "銀芽", "金苗", "ナツ", "シロ", "ナコ", "レコ"]
+    exact_match_chars_lower = [c.lower() for c in exact_match_chars]
+    
     for name in character_names:
-        if name in exact_match_chars:
-            if name in tag_list:
+        name_lower = name.lower()
+        if name_lower in exact_match_chars_lower:
+            if name_lower in tag_list_lower:
                 found.append(name)
         else:
-            if name in tags_str:
+            if name_lower in tags_str_lower:
                 found.append(name)
     return found

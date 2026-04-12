@@ -39,7 +39,7 @@ def get_top_20_2025(category):
         return None
         
     m_df = pd.DataFrame(mapping_data)
-    counts = m_df.groupby("character")["contentId"].nunique().sort_values(ascending=False).head(20).reset_index()
+    counts = m_df.groupby("character")["contentId"].nunique().sort_values(ascending=False).head(30).reset_index()
     counts.columns = ["キャラクター", "投稿数"]
     return counts
 
@@ -64,15 +64,15 @@ def main():
             # Format as "Char (Count)"
             all_ranks[cat_names[cat]] = [f"{row['キャラクター']} ({row['投稿数']})" for _, row in top_20.iterrows()]
         else:
-            all_ranks[cat_names[cat]] = ["-"] * 20
+            all_ranks[cat_names[cat]] = ["-"] * 30
 
-    # Ensure all lists are length 20
+    # Ensure all lists are length 30
     for cat in all_ranks:
-        while len(all_ranks[cat]) < 20:
+        while len(all_ranks[cat]) < 30:
             all_ranks[cat].append("-")
 
     res_df = pd.DataFrame(all_ranks)
-    res_df.index = range(1, 21)
+    res_df.index = range(1, 31)
     res_df.index.name = "順位"
     
     md_table = res_df.to_markdown()
