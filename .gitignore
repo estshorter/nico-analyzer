@@ -172,3 +172,10 @@ cython_debug/
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+# Results and data
+results/
+!results/first_onboard_all.json
+!results/first_onboard_all_active_recent_1year.json
+scripts/checks/*.html
+scripts/visuals/cascade.png

@@ -1,9 +1,3 @@
-# /// script
-# dependencies = [
-#   "nicovideo-api-client",
-# ]
-# ///
-
 import pickle
 from pathlib import Path
 from nicovideo_api_client.api.v2.snapshot_search_api_v2 import SnapshotSearchAPIV2
@@ -15,6 +9,8 @@ LIMIT = 10 * 1000 * 1000
 TIMEOUT = 800 * 16
 
 def main():
+    print("category: software?talk")
+
     # 抽出対象のキーワード
     keywords = [
         "ソフトウェアトーク",
@@ -25,7 +21,17 @@ def main():
         "VOICEVOX",
         "ガイノイドTalk",
         "CoeFont",
-        "COEIROINK"
+        "COEIROINK",
+        "結月ゆかり",
+        "紲星あかり",
+        "ずんだもん",
+        "琴葉茜",
+        "琴葉葵",
+        "東北きりたん",
+        "弦巻マキ",
+        "小春六花",
+        "東北ずん子",
+        "四国めたん",
     ]
     
     # ORで結合してクエリを作成
@@ -46,7 +52,9 @@ def main():
                 FieldType.TITLE,
                 FieldType.USER_ID,
                 FieldType.VIEW_COUNTER,
+                FieldType.LENGTH_SECONDS,
                 FieldType.START_TIME,
+                FieldType.LIKE_COUNTER,
                 FieldType.TAGS
             }
         )
